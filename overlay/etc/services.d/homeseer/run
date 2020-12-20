@@ -4,5 +4,4 @@
 sleep 2
 
 echo "Starting HomeSeer..."
-cd /opt/HomeSeer
-exec mono ./HSConsole.exe --log
+exec mono /opt/HomeSeer/HSConsole.exe --log

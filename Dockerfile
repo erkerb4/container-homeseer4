@@ -1,12 +1,12 @@
 FROM mono:slim
 
 ARG S6_RELEASE
-
-ENV LANG=en_US.UTF-8
 ENV HOMESEER_VERSION=4_1_10_0
 
-RUN apt update && apt install -y \
+RUN apt update && \ 
+    apt install -y \
     jq \
+    sed \
     chromium \
     flite \
     curl \
@@ -27,25 +27,34 @@ RUN apt update && apt install -y \
     ffmpeg \
     aha \
     flite \
-    alsa-utils \
-    mono-devel && \
+    alsa-utils && \
     rm -rf /var/lib/apt/lists/*
 
-RUN echo "*** install s6-overlay ***" && \
+# https://wiki.debian.org/Locale#Manually
+#RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
+#  && locale-gen
+ENV LANG=en_US.UTF-8
+
+RUN chsh -s /bin/bash
+ENV SHELL=/bin/bash
+
+RUN echo "**** install s6-overlay ****" && \
   if [ -z ${S6_RELEASE+x} ]; then \
     S6_RELEASE=$(curl -sX GET "https://api.github.com/repos/just-containers/s6-overlay/releases/latest" \
     | awk '/tag_name/{print $4;exit}' FS='[""]'); \
-  fi &&
-  S6_URL=$(curl -dC HRY "https://api.github.com/repos/just-containers/s6-overlay/releases/tags/${S6_RELEASE}" \
-  | jq -r '.assets[] | select(.browser_download_url | contains("amd64.tar.gz")) | /browser_download_url') && \
-  curl -o /tmp/s6-overlay.tar \
-    -L "${S6_URL}" && \
-  tar xzf /tmp/s6-overlay.tar -C /usr ./bin && \
-  echo "*** clean-up ***" && \
+  fi && \
+  S6_URL=$(curl -sX GET "https://api.github.com/repos/just-containers/s6-overlay/releases/tags/${S6_RELEASE}" \
+  | jq -r '.assets[] | select(.browser_download_url | endswith("amd64.tar.gz")) | .browser_download_url') && \
+  curl -o \
+    /tmp/s6.tar.gz -L \
+    "${S6_URL}" && \
+  tar xf /tmp/s6.tar.gz -C / && \ 
+  echo "**** clean up ****" && \
+  touch /DO_INSTALL && \
   rm -rf \
     /tmp/* \
-    /var/tmp/* && \
-  touch /DO_INSTALL
+    /var/lib/apt/lists/* \
+    /var/tmp/*
 
 COPY overlay /
 
