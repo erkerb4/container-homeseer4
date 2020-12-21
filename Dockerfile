@@ -1,6 +1,7 @@
 FROM mono:slim
 
 ARG S6_RELEASE
+ENV HS_HOME=/opt/homeseer
 ENV HOMESEER_VERSION=4_1_10_0
 
 RUN apt update && \ 
@@ -59,7 +60,7 @@ COPY overlay /
 ARG AVAHI
 RUN [ "${AVAHI:-1}" = "1" ] || (echo "Removing Avahi" && rm -rf /etc/services.d/avahi /etc/services.d/dbus)
 
-VOLUME [ "/opt/HomeSeer" ] 
+VOLUME [ "$HS_HOME" ] 
 EXPOSE 80 8888 10200 10300 10401 11000
 
 ENTRYPOINT [ "/init" ]
