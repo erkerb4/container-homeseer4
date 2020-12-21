@@ -4,7 +4,7 @@
 if [ -e /DO_INSTALL ]
 
 then
-    echo "HomeSeer (re)install/update required at container first run. Installing at /HomeSeer..."
+    echo "HomeSeer (re)install/update required at container first run. Installing at /opt/HomeSeer..."
 
     wget -O /tmp/homeseer.tgz "http://homeseer.com/updates4/linux_$HOMESEER_VERSION.tar.gz"
     tar -xzo -C /opt/ -f /tmp/homeseer.tgz
