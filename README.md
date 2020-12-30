@@ -1,6 +1,6 @@
 ## HomeSeer HS4 Container Image
 
-This image containerizes the HomeSeer HS4 home automation software. This is a fork from E1iTeDa357/docker-homeseer4 image with few changes. 
+This image containerizes the HomeSeer HS4 home automation software. 
 
 Here are few changes/additions to this container image:
 * You can set a specific version of HS4
@@ -9,6 +9,10 @@ Here are few changes/additions to this container image:
 
 ### Running the HomeSeer Container
 
+Note: If you'd like to run this container with rootless runtime, make sure to bind the WebUI port higher then 1024 (ex: 8080). Also make sure to correct the folder ownership. 
+
+#### Running with docker/podman run
+
 ```
 docker/podman run -d \
     --name homeseer \
@@ -16,7 +20,7 @@ docker/podman run -d \
     -e HOMESEER_VERSION=4_1_10_0 \
     -v /opt/homeseer:/opt/homeseer \
     -v /etc/localtime:/etc/localtime:ro \
-    -p 80:80 \
+    -p 8080:80 \  ## WebUI will respond on 8080
     -p 10200:10200 \
     -p 10300:10300 \
     -p 10401:10401 \
@@ -43,8 +47,10 @@ services:
     volumes:
       - /opt/homeseer:/opt/homeseer
       - /etc/localtime:/etc/localtime:ro
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
     ports:
-      - 8080:80
+      - 8080:80     ## WebUI will respond on port 8080
       - 10200:10200
       - 10300:10300
       - 10401:10401
@@ -52,16 +58,17 @@ services:
 ```
 
 #### Options:  
-`--name homeseer`: Names the container "homeseer".
-`-e LINUX_ASPX` : Applies the mono fix to help load ASPX pages in Linux documented in [HomeSeer Forums](https://forums.homeseer.com/forum/homeseer-products-services/system-software-controllers/hs4-hs4pro-software/1415987-installing-hs4-on-linux?p=1416953#post1416953). Accepted values are true/false 
-`-e HOMESEER_VERSION` : Downloads the version of HomeSeer4 release.
-`-v /opt/homeseer:/opt/homeseer`: Bind mount /opt/homeseer (or the directory of your choice) into the container for persistent storage. This directory on the host will contain the complete HomeSeer installation and could be moved between systems if necessary (be sure to shutdown HomeSeer cleanly first, via Tools - System - Shutdown HomeSeer).  
-`-v /etc/localtime:/etc/localtime:ro`: Ensure the container has the correct localtime.  
-`-p 80:80`: Port 80, used by the HomeSeer web user interface (specify a different WebUI listen port by changing the first number, e.g. `-p 8080:80` to listen on port 8080 instead).  
-`-p 10200:10200`: Port 10200, used by HSTouch.  
-`-p 10300:10300`: Port 10300, used by myHS.  
-`-p 10401:10401`: Port 10401, used by speaker clients.  
-`--device /dev/ttyUSB0`: Pass a USB device at /dev/ttyUSB0 (i.e. a USB Zwave interface) into the container; replace `ttyUSB0` with the actual name of your device (e.g. ttyUSB1, ttyACM0, etc.).
+`--name homeseer`: Names the container "homeseer"  
+`-e LINUX_ASPX` : Applies the mono fix to help load ASPX pages in Linux documented in [HomeSeer Forums](https://forums.homeseer.com/forum/homeseer-products-services/system-software-controllers/hs4-hs4pro-software/1415987-installing-hs4-on-linux?p=1416953#post1416953). Accepted values are true/false  
+`-e HOMESEER_VERSION` : Downloads the version of HomeSeer4 release  
+`-v /opt/homeseer:/opt/homeseer`: Bind mount /opt/homeseer (or the directory of your choice) into the container for persistent storage. This directory on the host will contain the complete HomeSeer installation and could be moved between systems if necessary (be sure to shutdown HomeSeer cleanly first, via Tools - System - Shutdown HomeSeer)  
+`-v /etc/localtime:/etc/localtime:ro`: Ensure the container has the correct localtime  
+`-p 80:80`: Port 80, used by the HomeSeer web user interface (specify a different WebUI listen port by changing the first number, e.g.  
+`-p 8080:80` to listen on port 8080 instead)  
+`-p 10200:10200`: Port 10200, used by HSTouch  
+`-p 10300:10300`: Port 10300, used by myHS  
+`-p 10401:10401`: Port 10401, used by speaker clients    
+`--device /dev/ttyUSB0`: Pass a USB device at /dev/ttyUSB0 (i.e. a USB Zwave interface) into the container; replace `ttyUSB0` with the actual name of your device (e.g. ttyUSB1, ttyACM0, etc.)  
 `erkerb4/homeseer4:latest`: See below for descriptions of available image tags.
 
 ### Available Image Tags
@@ -75,18 +82,17 @@ services:
 
 You can control the version of HS4 running with the container. Container is just the environment that HS4 needs to run. It makes it easier to control/maintain all the dependencies. When container runs for the first time, it will download and install desired version of HomeSeer4. When you update the version of HS4, it will download the desired version, and update the instance. Container is merely a shell for HS4, and I will update it regularly to ensure environment is up-to-date. To update HS4, do the following
 
-`docker/podman stop homeseer` [or, whatever name you gave to the container via the `--name` parameter]
-`docker/podman rm homeseer` [or, whatever name you gave to the container via the `--name` parameter]
+`docker/podman stop homeseer` [or, whatever name you gave to the container via the `--name` parameter]  
+`docker/podman rm homeseer` [or, whatever name you gave to the container via the `--name` parameter]  
 Take the docker/podman run command above, and update -e HOMESEER_VERSION= parameter
 
 ...then re-create your container using the same command-line parameters used at first run. The new HomeSeer version will be downloaded and installed when the container is run. Your existing user data, plugins, etc., will be preserved.
 
 ### Updating Container
 
-`docker/podman stop homeseer` [or, whatever name you gave to the container via the `--name` parameter]
-`docker/podman rm homeseer` [or, whatever name you gave to the container via the `--name` parameter]
+`docker/podman stop homeseer` [or, whatever name you gave to the container via the `--name` parameter]  
+`docker/podman rm homeseer` [or, whatever name you gave to the container via the `--name` parameter]  
 `docker/podman pull quay.io/erkerb4/homeseer4:latest` Take the docker/podman run command above, and update -e HOMESEER_VERSION= parameter
-
 
 ### Gotchas / Known Issues
 
