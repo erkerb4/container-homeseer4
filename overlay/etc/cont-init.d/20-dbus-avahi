@@ -16,7 +16,7 @@ dbus-uuidgen --ensure
 sleep 1
 
 # avahi config
-cp /defaults/avahi-daemon.conf /etc/avahi/avahi-daemon.conf
+cp /etc/avahi/avahi-daemon.conf.tpl /etc/avahi/avahi-daemon.conf
 
 # fix for synology dsm - see #35
 if [ ! -z "$DSM_HOSTNAME" ]; then

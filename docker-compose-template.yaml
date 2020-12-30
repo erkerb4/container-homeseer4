@@ -1,0 +1,20 @@
+version: '2.4'
+
+services:
+  homeseer:
+    image: quay.io/erkerb4/homeseer4:latest
+    hostname: homeseer
+    restart: unless-stopped
+    environment:
+      - TZ=America/New_York
+      - LINUX_ASPX="true"
+      - HOMESEER_VERSION=4_1_10_0
+    volumes:
+      - /opt/homeseer:/opt/homeseer
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8080:80
+      - 10200:10200
+      - 10300:10300
+      - 10401:10401
+      - 11000:11000

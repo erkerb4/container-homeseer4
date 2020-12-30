@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+
+# Minor update to make aspx page load for Linuxif [ -z "${LINUX_ASPX}" = 'true' ];
+if [[ ! -z "${LINUX_ASPX}" ]] || [[ ${LINUX_ASPX} == "true" ]]; then
+  echo "Updating vbnc"
+  rm -f /usr/bin/vbnc
+  echo -e '#!/bin/bash\nexec /usr/bin/mono --gc-params=nursery-size=64m $MONO_OPTIONS /usr/lib/mono/4.5/vbc.exe "$@"' >> /usr/bin/vbnc
+
+else
+    echo "ASPX fix is not requested/needed.";
+fi
