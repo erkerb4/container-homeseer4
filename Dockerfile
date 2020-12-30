@@ -28,11 +28,17 @@ RUN apt update && \
     ffmpeg \
     aha \
     flite \
+    locales \
     alsa-utils && \
     rm -rf /var/lib/apt/lists/*
 
 RUN apt autoremove && \
   apt autoclean
+
+# https://wiki.debian.org/Locale#Manually
+RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
+  && locale-gen
+ENV LANG=en_US.UTF-8
 
 RUN chsh -s /bin/bash
 ENV SHELL=/bin/bash
