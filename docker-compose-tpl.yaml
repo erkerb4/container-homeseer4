@@ -12,6 +12,8 @@ services:
     volumes:
       - /opt/homeseer:/opt/homeseer
       - /etc/localtime:/etc/localtime:ro
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
     ports:
       - 8080:80
       - 10200:10200
