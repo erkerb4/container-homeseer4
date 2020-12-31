@@ -9,8 +9,6 @@ Here are few changes/additions to this container image:
 
 ### Running the HomeSeer Container
 
-Note: If you'd like to run this container with rootless runtime, make sure to bind the WebUI port higher then 1024 (ex: 8080). Also make sure to correct the folder ownership. 
-
 #### Running with docker/podman run
 
 ```
