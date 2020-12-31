@@ -1,3 +1,5 @@
+[![Docker Repository on Quay](https://quay.io/repository/erkerb4/homeseer4/status "Docker Repository on Quay")](https://quay.io/repository/erkerb4/homeseer4)  
+
 ## HomeSeer HS4 Container Image
 
 This image containerizes the HomeSeer HS4 home automation software. 
