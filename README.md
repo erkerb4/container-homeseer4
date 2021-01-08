@@ -91,6 +91,7 @@ In this instance `PUID=1000` and `PGID=1000`, to find yours use `id user` as bel
 ```
   $ id username
     uid=1000(dockeruser) gid=1000(dockergroup) groups=1000(dockergroup)
+```
 
 ## Setting udev rule for USB Device for homeseer
 
