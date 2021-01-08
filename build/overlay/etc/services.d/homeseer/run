@@ -1,7 +1,10 @@
-#!/usr/bin/with-contenv sh
+#!/usr/bin/with-contenv bash
+
+USER_NAME=${USER_NAME:-homeseer}
 
 # wait for services to come up
 sleep 2
 
 echo "Starting HomeSeer..."
-exec mono $HS_HOME/HSConsole.exe --log
+exec 2>&1 \
+  s6-setuidgid ${USER_NAME} mono $HS_HOME/HSConsole.exe --log
