@@ -32,9 +32,6 @@ RUN apt update && \
     alsa-utils && \
     rm -rf /var/lib/apt/lists/*
 
-RUN apt autoremove && \
-  apt autoclean
-
 # https://wiki.debian.org/Locale#Manually
 RUN sed -i "s/# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen \
   && locale-gen
@@ -61,12 +58,21 @@ RUN echo "**** install s6-overlay ****" && \
     /var/lib/apt/lists/* \
     /var/tmp/*
 
+RUN echo "**** create itsapod user ****" && \
+ groupmod -g 1000 users && \
+ useradd -u 957 -U -d /home/pod -s /bin/bash itsapod && \
+ usermod -G users itsapod && \
+ echo "**** cleanup ****" && \
+ apt autoremove && \
+ apt autoclean && \
+ rm -rf /tmp/*
+
 COPY overlay /
 
 ARG AVAHI
 RUN [ "${AVAHI:-1}" = "1" ] || (echo "Removing Avahi" && rm -rf /etc/services.d/avahi /etc/services.d/dbus)
 
 VOLUME [ "$HS_HOME" ] 
-EXPOSE 80 8888 10200 10300 10401 11000
+EXPOSE 1080 10200 10300 10401 11000
 
 ENTRYPOINT [ "/init" ]
