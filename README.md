@@ -72,7 +72,7 @@ services:
 `--name homeseer`: Names the container "homeseer"  
 `--hostname homeseer`: Configures the hostname of the container instance to "homeseer"  
 `-e LINUX_ASPX` : Applies the mono fix to help load ASPX pages in Linux documented in [HomeSeer Forums](https://forums.homeseer.com/forum/homeseer-products-services/system-software-controllers/hs4-hs4pro-software/1415987-installing-hs4-on-linux?p=1416953#post1416953). Accepted values are true/false  
-`-e HOMESEER_VERSION` : Downloads the desired version of HomeSeer4 release to run in the container
+`-e HOMESEER_VERSION` : Downloads the desired version of HomeSeer4 release to run in the container   
 `-e HS_RUNASUSER` : This parameter configures a regular user account in the container, and runs HomeSeer software with that user. It is enabled by default. Accepts true/false   
 `-e PUID` : for UserID, used if HS_RUNASUSER flag is set to true  
 `-e PUID` : for GroupID, used if HS_RUNASUSER flag is set to true  
