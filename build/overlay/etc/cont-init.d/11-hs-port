@@ -2,14 +2,22 @@
 
 HS_SETTINGS_FILE=$HS_HOME/Config/settings.ini
 
-if ! grep "gWebSvrPort" $HS_SETTINGS_FILE ; then
+if [[ ! -f "$HS_SETTINGS_FILE" ]] ; then
+  echo "This must be the first start of this container, creating settings file"
+  touch $HS_SETTINGS_FILE
+  echo "[Settings]" >> "$HS_SETTINGS_FILE"
+else
+  echo "Settings file exists, nothing to see here folks."
+fi
+
+if ! grep "gWebSvrPort" "$HS_SETTINGS_FILE" ; then
   echo "gWebSvrPort=1080" >> "$HS_SETTINGS_FILE"
   echo "HomeSeer WebUI now serves on port 1080"
 else
   echo "HomeSeer WebUI is already set"
 fi
 
-if ! grep -Fxq "gWebSvrPort=1080" $HS_SETTINGS_FILE ; then
+if ! grep -Fx "gWebSvrPort=1080" "$HS_SETTINGS_FILE" ; then
   sed -i "/gWebSvrPort=/c\gWebSvrPort=1080" "$HS_SETTINGS_FILE"
   echo "HomeSeer WebUI port updated to serve over port 1080"
 else

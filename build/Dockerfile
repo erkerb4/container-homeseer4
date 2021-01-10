@@ -58,9 +58,9 @@ RUN echo "**** install s6-overlay ****" && \
     /var/lib/apt/lists/* \
     /var/tmp/*
 
-RUN echo "**** create itsapod user ****" && \
+RUN echo "**** create itsapod user for container ****" && \
  groupmod -g 1000 users && \
- useradd -u 957 -U -d /home/pod -s /bin/bash itsapod && \
+ useradd -u 957 -U -d /home/pod -s /bin/false itsapod && \
  usermod -G users itsapod && \
  echo "**** cleanup ****" && \
  apt autoremove && \

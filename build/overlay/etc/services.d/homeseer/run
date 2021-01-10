@@ -1,10 +1,16 @@
 #!/usr/bin/with-contenv bash
 
 USER_NAME=${USER_NAME:-homeseer}
+HS_RUNASUSER=${HS_RUNASUSER:-false}
 
 # wait for services to come up
 sleep 2
-
-echo "Starting HomeSeer..."
-exec 2>&1 \
-  s6-setuidgid ${USER_NAME} mono $HS_HOME/HSConsole.exe --log
+if [[ ${HS_RUNASUSER} == "true" ]]; then
+  echo "Starting HomeSeer with $USER_NAME..."
+  exec 2>&1 \
+    s6-setuidgid ${USER_NAME} mono $HS_HOME/HSConsole.exe --log
+else
+  echo "Starting HomeSeer..."
+  exec 2>&1 \
+    mono $HS_HOME/HSConsole.exe --log
+fi
