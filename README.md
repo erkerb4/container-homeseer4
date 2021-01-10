@@ -2,7 +2,7 @@
 
 ## HomeSeer HS4 Container Image
 
-This image containerizes the HomeSeer HS4 home automation software. 
+This image containerizes the HomeSeer HS4 home automation software.  
 
 Here are few changes/additions to this container image:
 * You can set a specific version of HS4
