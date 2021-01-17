@@ -1,0 +1,35 @@
+#!/usr/bin/with-contenv bash
+
+USER_NAME=${USER_NAME:-homeseer}
+HS_RUNASUSER=${HS_RUNASUSER:-true}
+
+PUID=${PUID:-957}
+PGID=${PGID:-957}
+
+if [[ ${HS_RUNASUSER} == "true" ]]; then
+  echo "enabling regular user account"
+  usermod --shell /bin/bash itsapod
+
+  [[ "$USER_NAME" != "itsapod" ]] && \
+      usermod -l "$USER_NAME" itsapod && \
+      groupmod -n "$USER_NAME" itsapod
+  
+  groupmod -o -g "$PGID" "$USER_NAME"
+  usermod -o -u "$PUID" "$USER_NAME"
+  usermod -a -G dialout "$USER_NAME"
+  
+  echo '
+  -------------------------------------
+  GID/UID
+  -------------------------------------'
+  echo "
+  User uid:    $(id -u "$USER_NAME")
+  User gid:    $(id -g "$USER_NAME")
+  -------------------------------------
+  "
+  echo "Setting folder permissions for HomeSeer"
+  chown -Rf "$USER_NAME":"$USER_NAME" "$HS_HOME"
+  chmod go-w "$HS_HOME"
+else
+  echo "regular user is not requested"
+fi
