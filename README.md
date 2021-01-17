@@ -25,7 +25,7 @@ docker/podman run -d \
     -e PUID=1001 \ ## optional, explanation below
     -e PGID=1001 \ ## optional, explanation below
     -e USER_NAME=homeseer \ ## optional, explanation below
-    -v /opt/homeseer:/opt/homeseer \
+    -v /opt/homeseer:/homeseer \
     -v /etc/localtime:/etc/localtime:ro \
     -p 1080:1080 \  ## WebUI will respond on 1080
     -p 10200:10200 \
@@ -46,7 +46,6 @@ services:
   homeseer:
     image: quay.io/erkerb4/homeseer4:latest
     hostname: homeseer
-    restart: unless-stopped
     environment:
       - TZ=America/New_York
       - LINUX_ASPX="true"
@@ -56,7 +55,7 @@ services:
       - PGID=1001
       - USER_NAME=homeseer
     volumes:
-      - /opt/homeseer:/opt/homeseer
+      - /opt/homeseer:/homeseer
       - /etc/localtime:/etc/localtime:ro
     devices:
       - /dev/ttyACM0:/dev/ttyACM0
@@ -70,14 +69,14 @@ services:
 
 #### Options:  
 `--name homeseer`: Names the container "homeseer"  
-`--hostname homeseer`: Configures the hostname of the container instance to "homeseer"  
+`--hostname homeseer`: Configures the hostname of the container instance to "homeseer"   
 `-e LINUX_ASPX` : Applies the mono fix to help load ASPX pages in Linux documented in [HomeSeer Forums](https://forums.homeseer.com/forum/homeseer-products-services/system-software-controllers/hs4-hs4pro-software/1415987-installing-hs4-on-linux?p=1416953#post1416953). Accepted values are true/false  
 `-e HOMESEER_VERSION` : Downloads the desired version of HomeSeer4 release to run in the container   
-`-e HS_RUNASUSER` : This parameter configures a regular user account in the container, and runs HomeSeer software with that user. It is enabled by default. Accepts true/false   
+`-e HS_RUNASUSER` : This parameter configures a regular user account in the container, and runs HomeSeer software with that user. It is enabled by default. Accepts true/false. Make sure to follow "Setting udev rule for USB Device for homeseer" section   
 `-e PUID` : for UserID, used if HS_RUNASUSER flag is set to true  
 `-e PUID` : for GroupID, used if HS_RUNASUSER flag is set to true  
 `-e USER_NAME` : Configures the name of the user account in the container. Used if HS_RUNASUSER flag is set to true and defaults to username homeseer  
-`-v /opt/homeseer:/opt/homeseer`: Bind mount /opt/homeseer (or the directory of your choice) into the container for persistent storage. This directory on the host will contain the complete HomeSeer installation and could be moved between systems if necessary (be sure to shutdown HomeSeer cleanly first, via Tools - System - Shutdown HomeSeer)  
+`-v /opt/homeseer:/homeseer`: Mount /opt/homeseer (or the directory of your choice on your house) to /homeseer in container to persistent state. This directory on the host will contain the complete HomeSeer installation and could be moved between systems if necessary (be sure to shutdown HomeSeer cleanly first, via Tools - System - Shutdown HomeSeer)  
 `-v /etc/localtime:/etc/localtime:ro`: Ensure the container has the correct localtime  
 `-p 1080:1080`: Port 1080, used by the HomeSeer web user interface (specify a different WebUI listen port by changing the first number, e.g.)   
 `-p 10200:10200`: Port 10200, used by HSTouch  
@@ -157,3 +156,4 @@ This image was inspired by @marthoc's HomeSeer image (on Docker Hub at marthoc/h
 * Find a dynamic way to find the latest stable version of HomeSeer4
 * Figure out a way to properly shutdown?
 * Find a better way for setting udev rule for USB Device for homeseer
+* Backup HS instance to a seperate directory
