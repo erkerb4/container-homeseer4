@@ -1,7 +1,7 @@
 FROM mono:slim
 
 ARG S6_RELEASE
-ENV HS_HOME=/opt/homeseer
+ENV HS_HOME=/homeseer
 ENV HOMESEER_VERSION=4_1_10_0
 
 RUN apt update && \ 
