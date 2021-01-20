@@ -1,4 +1,4 @@
-FROM mono:slim
+FROM mono:latest
 
 ARG S6_RELEASE
 ENV HS_HOME=/homeseer
@@ -8,7 +8,6 @@ RUN apt update && \
     apt install -y \
     jq \
     sed \
-    chromium \
     flite \
     curl \
     wget \
@@ -17,8 +16,6 @@ RUN apt update && \
     etherwake \
     ssh-client \
     mosquitto-clients \
-    mono-xsp4 \
-    mono-vbnc \
     avahi-discover \
     libavahi-compat-libdnssd-dev \
     libnss-mdns \
@@ -27,7 +24,6 @@ RUN apt update && \
     mdns-scan \
     ffmpeg \
     aha \
-    flite \
     locales \
     alsa-utils && \
     rm -rf /var/lib/apt/lists/*
@@ -52,7 +48,6 @@ RUN echo "**** install s6-overlay ****" && \
     "${S6_URL}" && \
   tar xf /tmp/s6.tar.gz -C / && \ 
   echo "**** clean up ****" && \
-  touch /DO_INSTALL && \
   rm -rf \
     /tmp/* \
     /var/lib/apt/lists/* \
