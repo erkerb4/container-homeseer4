@@ -79,8 +79,8 @@ services:
 `-e PUID` : for UserID, used if HS_RUNASUSER flag is set to true  
 `-e PUID` : for GroupID, used if HS_RUNASUSER flag is set to true  
 `-e USER_NAME` : Configures the name of the user account in the container. Used if HS_RUNASUSER flag is set to true and defaults to username homeseer  
-`-v /opt/homeseer:/homeseer`: Mount /opt/homeseer (or the directory of your choice on your house) to /homeseer in container to persistent state. This directory on the host will contain the complete HomeSeer installation and could be moved between systems if necessary (be sure to shutdown HomeSeer cleanly first, via Tools - System - Shutdown HomeSeer) 
-`-v /opt/backup:/backup`: Backup of the homeseer directory will be taken prior to upgrade. Highly recommended 
+`-v /opt/homeseer:/homeseer`: Mount /opt/homeseer (or the directory of your choice on your house) to /homeseer in container to persistent state. This directory on the host will contain the complete HomeSeer installation and could be moved between systems if necessary (be sure to shutdown HomeSeer cleanly first, via Tools - System - Shutdown HomeSeer)    
+`-v /opt/backup:/backup`: Backup of the homeseer directory will be taken prior to upgrade. Highly recommended   
 `-v /etc/localtime:/etc/localtime:ro`: Ensure the container has the correct localtime  
 `-p 1080:1080`: Port 1080, used by the HomeSeer web user interface (specify a different WebUI listen port by changing the first number, e.g.)   
 `-p 10200:10200`: Port 10200, used by HSTouch  
@@ -149,6 +149,13 @@ HomeSeer will be installed when container is started for the first time. Startin
 
 This image currently only runs on amd64/x86_64.
 
+#### Running HomeSeer locally/from home
+
+When you are running the container, you will notice that MyHS service may not correctly identify the local IP when you are connecting locally with HomeSeer App. This is because, MyHS registers the container IP as local, which will not be routable from your home network. There seem to be two possible way to address this:
+
+1. When using HomeSeer app locally, logout from your system and manually connect using IP/hostname. Remote connection, and local seem to work. 
+2. Use host networking when running the container. (remove the ports and run the container with --network host). For more information [host networking](https://docs.docker.com/network/host/)
+
 ### Acknowledgments
 
 This is a fork from E1iTeDa357/docker-homeseer4 image with few changes.
@@ -160,4 +167,3 @@ This image was inspired by @marthoc's HomeSeer image (on Docker Hub at marthoc/h
 * Find a dynamic way to find the latest stable version of HomeSeer4
 * Figure out a way to properly shutdown?
 * Find a better way for setting udev rule for USB Device for homeseer
-* Backup HS instance to a seperate directory
