@@ -2,6 +2,8 @@
 HS_VERSION_FILE=$HS_HOME/.container_version.txt
 # Install HomeSeer if container is started for the first time
 if ! grep -Fxq "${HOMESEER_VERSION}" $HS_VERSION_FILE ;  then
+  echo "New version requested, backing up before the upgrade"
+  tar -cjvpf /backup/$(date +"%FT%H%M")-hsbackup.tar.gz $HS_HOME
   echo "HomeSeer (re)install/update required at container first run. Installing HomeSeer..."
   wget -O /tmp/homeseer.tgz "https://homeseer.com/updates4/linux_$HOMESEER_VERSION.tar.gz"
   tar -xzo -C $HS_HOME -f /tmp/homeseer.tgz --strip-components=1
@@ -9,5 +11,4 @@ if ! grep -Fxq "${HOMESEER_VERSION}" $HS_VERSION_FILE ;  then
   rm -f /tmp/*
 else
     echo "HomeSeer already installed, not (re)installing/updating..."
-
 fi
