@@ -21,11 +21,11 @@ docker/podman run -d \
     --name homeseer \
     --hostname homeseer \
     -e LINUX_ASPX=true \
-    -e HOMESEER_VERSION=4_1_12_0 \
+    -e HOMESEER_VERSION=4_1_15_0 \
     -e HS_RUNASUSER=true \ ## optional, explanation below
+    -e USER_NAME=homeseer \ ## optional, explanation below
     -e PUID=1001 \ ## optional, explanation below
     -e PGID=1001 \ ## optional, explanation below
-    -e USER_NAME=homeseer \ ## optional, explanation below
     -v /opt/homeseer:/homeseer \
     -v /opt/backup:/backup \  ## recommended, explanation below
     -v /etc/localtime:/etc/localtime:ro \
@@ -35,39 +35,31 @@ docker/podman run -d \
     -p 10401:10401 \
     -p 11000:11000 \
     --device /dev/ttyACM0 \ ## Your USB mount may differ
+    --log-opt max-size=50mb \ ## Set stdout logging to 50mb, otherwise it will fill your partition
     quay.io/erkerb4/homeseer4:latest
 ```
-### Running the HomeSeer Container with docker-compose
 
-This is a copy of docker-compose-template.yaml. You can use [podman-compose](https://github.com/containers/podman-compose)
+#### Running with docker/podman run w/ host-networking
+
+If you use the host network mode for a container, that container’s network stack is not isolated from the host (container shares the host/s networking namespace)  and the container does not get its own IP. Running the container with host-networking will resolve issues connecting HomeSeer locally using HomeSeer app, and connecting to speaker-clients on start.
 
 ```
-version: '2.4'
-
-services:
-  homeseer:
-    image: quay.io/erkerb4/homeseer4:latest
-    hostname: homeseer
-    environment:
-      - TZ=America/New_York
-      - LINUX_ASPX="true"
-      - HOMESEER_VERSION=4_1_12_0
-      - HS_RUNASUSER=true
-      - PUID=1001
-      - PGID=1001
-      - USER_NAME=homeseer
-    volumes:
-      - /opt/homeseer:/homeseer
-      - /opt/backup:/backup
-      - /etc/localtime:/etc/localtime:ro
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
-    ports:
-      - 1080:1080     ## WebUI will respond on port 8080
-      - 10200:10200
-      - 10300:10300
-      - 10401:10401
-      - 11000:11000
+docker/podman run -d \
+    --name homeseer \
+    --hostname homeseer \
+    -e LINUX_ASPX=true \
+    -e HOMESEER_VERSION=4_1_15_0 \
+    -e HS_RUNASUSER=true \ ## optional, explanation below
+    -e USER_NAME=homeseer \ ## optional, explanation below
+    -e PUID=1001 \ ## optional, explanation below
+    -e PGID=1001 \ ## optional, explanation below
+    -v /opt/homeseer:/homeseer \
+    -v /opt/backup:/backup \  ## recommended, explanation below
+    -v /etc/localtime:/etc/localtime:ro \
+    --net=host \
+    --device /dev/ttyACM0 \ ## Your USB mount may differ
+    --log-opt max-size=50mb \ ## Set stdout logging to 50mb, otherwise it will fill your partition
+    quay.io/erkerb4/homeseer4:latest
 ```
 
 #### Options:  
@@ -149,11 +141,14 @@ HomeSeer will be installed when container is started for the first time. Startin
 
 This image currently only runs on amd64/x86_64.
 
+When you run the container without host-networking devices, you may experience difficulties automatically connecting to speaker clients on your network (such as Google Hub/Home devices). Manual connection would work, but it's not ideal. If you have Google Hub devices, it will b better to use host-networking. (unless there is another way..)
+
 #### Running HomeSeer locally/from home
 
 When you are running the container, you will notice that MyHS service may not correctly identify the local IP when you are connecting locally with HomeSeer App. This is because, MyHS registers the container IP as local, which will not be routable from your home network. There seem to be two possible way to address this:
 
 1. When using HomeSeer app locally, logout from your system and manually connect using IP/hostname. Remote connection, and local seem to work. 
+OR
 2. Use host networking when running the container. (remove the ports and run the container with --network host). For more information [host networking](https://docs.docker.com/network/host/)
 
 ### Acknowledgments
