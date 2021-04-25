@@ -11,7 +11,6 @@ RUN apt update && \
     flite \
     curl \
     wget \
-    iputils-ping \
     net-tools \
     etherwake \
     ssh-client \
