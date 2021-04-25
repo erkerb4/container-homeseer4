@@ -2,7 +2,7 @@ FROM mono:latest
 
 ARG S6_RELEASE
 ENV HS_HOME=/homeseer
-ENV HOMESEER_VERSION=4_1_10_0
+ENV HOMESEER_VERSION=4_1_15_0
 
 RUN apt update && \ 
     apt install -y \
@@ -11,7 +11,6 @@ RUN apt update && \
     flite \
     curl \
     wget \
-    iputils-ping \
     net-tools \
     etherwake \
     ssh-client \
@@ -25,6 +24,8 @@ RUN apt update && \
     ffmpeg \
     aha \
     locales \
+    inetutils-ping \
+    procps \
     alsa-utils && \
     rm -rf /var/lib/apt/lists/*
 
